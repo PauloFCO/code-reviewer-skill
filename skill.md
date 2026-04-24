@@ -29,18 +29,19 @@ OPTIONS:
   --help             Show this help message
 
 AVAILABLE CONVENTIONS:
-  solid              SOLID principles (SRP, OCP, LSP, ISP, DIP)
-  oop                Object-Oriented Programming principles
-  clean-code         Clean Code best practices (naming, functions, DRY, comments)
-  hexagonal          Hexagonal Architecture (ports & adapters, domain isolation)
+  default
+      solid              SOLID principles (SRP, OCP, LSP, ISP, DIP)
+      oop                Object-Oriented Programming principles
+      clean-code         Clean Code best practices (naming, functions, DRY, comments)
+      hexagonal          Hexagonal Architecture (ports & adapters, domain isolation)
   frontend           React/TypeScript, Clean Architecture (frontend), JS best practices
 
 EXAMPLES:
   /code-review
   /code-review --frontend
   /code-review --all
-  /code-review --only solid
-  /code-review --only solid --only clean-code
+  /code-review --only frontend
+  /code-review --only frontend --only default
   /code-review --only frontend
 ```
 
