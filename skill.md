@@ -6,27 +6,29 @@ You are an expert code reviewer. When this skill is invoked, follow these instru
 
 The user may pass arguments after `/code-review`. Parse them:
 
-- `--help` → Print the help message (see below) and stop.
+- `--help` → Print the help message (see below), then run `git branch` and `git branch -r` to list available branches, and stop.
+- `--branch <name>` → Compare the current branch against `<name>` (commits on HEAD not yet on `<name>`).
 - `--all` → Apply ALL conventions: default + frontend.
 - `--frontend` → Apply default conventions PLUS frontend conventions.
 - `--only <name>` → Apply ONLY the named convention(s). Multiple `--only` flags are allowed.
   - Valid names: `solid`, `oop`, `clean-code`, `hexagonal`, `frontend`
-- No arguments → Apply default conventions (solid + oop + clean-code + hexagonal).
+- No arguments → Analyze uncommitted changes in the working tree (staged + unstaged).
 
 **Help message to print when `--help` is passed:**
 
 ```
-/code-review — Analyzes only the new code in the current branch.
+/code-review — Reviews new code. By default analyzes uncommitted working-tree changes.
 
 USAGE:
   /code-review [options]
 
 OPTIONS:
-  (none)             Apply default conventions: SOLID, OOP, Clean Code, Hexagonal Architecture
+  (none)             Analyze uncommitted changes in the working tree (staged + unstaged)
+  --branch <name>    Compare current branch against the specified branch (committed diff)
   --frontend         Apply default conventions + React/TS, Clean Architecture, JS best practices
   --all              Apply all available conventions
   --only <name>      Apply only specific convention(s). Repeatable.
-  --help             Show this help message
+  --help             Show this help message and list available branches
 
 AVAILABLE CONVENTIONS:
   solid              SOLID principles (SRP, OCP, LSP, ISP, DIP)
@@ -37,27 +39,34 @@ AVAILABLE CONVENTIONS:
 
 EXAMPLES:
   /code-review
-  /code-review --frontend
-  /code-review --all
+  /code-review --branch develop
+  /code-review --branch main --frontend
   /code-review --only solid
   /code-review --only solid --only clean-code
   /code-review --only frontend
 ```
 
+Then run `git branch` and `git branch -r` and display the output under two headings:
+- **Local branches:**
+- **Remote branches:**
+
 ## Step 2: Get the New Code
 
-Run this bash command to get the diff of only new/changed code in the current branch vs `origin/main`:
-
+**If `--branch <name>` was provided:**
+Run:
 ```bash
-git diff $(git merge-base HEAD origin/main)...HEAD
+git diff $(git merge-base HEAD <name>)...HEAD
 ```
+If the merge-base fails (branch not found), inform the user: "Branch `<name>` not found in the repository. Use `--help` to see available branches."
+If the diff is empty, respond: "No new commits found on the current branch compared to `<name>`. Nothing to review."
 
-If `origin/main` is not available, fall back to:
+**If no `--branch` was provided (default):**
+Run:
 ```bash
-git diff $(git merge-base HEAD main)...HEAD
+git diff HEAD
 ```
-
-If the diff is empty, respond: "No new code found in this branch compared to main. Nothing to review."
+This shows all uncommitted changes (staged + unstaged) vs the last commit.
+If the diff is empty, respond: "No uncommitted changes found in the working tree. Nothing to review."
 
 ## Step 3: Determine Active Conventions
 
@@ -89,6 +98,7 @@ Output the review using this exact structure:
 ## Code Review Report
 
 **Branch:** `<current-branch-name>`
+**Diff mode:** `uncommitted changes` | `vs branch: <branch-name>`
 **Files reviewed:** <N>
 **Lines added:** <N>
 **Active conventions:** <list>
