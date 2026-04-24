@@ -31,10 +31,11 @@ OPTIONS:
   --help             Show this help message and list available branches
 
 AVAILABLE CONVENTIONS:
-  solid              SOLID principles (SRP, OCP, LSP, ISP, DIP)
-  oop                Object-Oriented Programming principles
-  clean-code         Clean Code best practices (naming, functions, DRY, comments)
-  hexagonal          Hexagonal Architecture (ports & adapters, domain isolation)
+  default
+      solid              SOLID principles (SRP, OCP, LSP, ISP, DIP)
+      oop                Object-Oriented Programming principles
+      clean-code         Clean Code best practices (naming, functions, DRY, comments)
+      hexagonal          Hexagonal Architecture (ports & adapters, domain isolation)
   frontend           React/TypeScript, Clean Architecture (frontend), JS best practices
 
 EXAMPLES:
@@ -47,6 +48,7 @@ EXAMPLES:
 ```
 
 Then run `git branch` and `git branch -r` and display the output under two headings:
+
 - **Local branches:**
 - **Remote branches:**
 
@@ -54,17 +56,21 @@ Then run `git branch` and `git branch -r` and display the output under two headi
 
 **If `--branch <name>` was provided:**
 Run:
+
 ```bash
 git diff $(git merge-base HEAD <name>)...HEAD
 ```
+
 If the merge-base fails (branch not found), inform the user: "Branch `<name>` not found in the repository. Use `--help` to see available branches."
 If the diff is empty, respond: "No new commits found on the current branch compared to `<name>`. Nothing to review."
 
 **If no `--branch` was provided (default):**
 Run:
+
 ```bash
 git diff HEAD
 ```
+
 This shows all uncommitted changes (staged + unstaged) vs the last commit.
 If the diff is empty, respond: "No uncommitted changes found in the working tree. Nothing to review."
 
@@ -73,6 +79,7 @@ If the diff is empty, respond: "No uncommitted changes found in the working tree
 Based on parsed arguments, load the corresponding convention files from the `conventions/` subdirectory next to this `skill.md`. Read only the convention files that are active.
 
 Convention file mapping:
+
 - `solid`, `oop`, `clean-code`, `hexagonal` → `conventions/default.md`
 - `frontend` → `conventions/frontend.md`
 
@@ -106,29 +113,35 @@ Output the review using this exact structure:
 ---
 
 ### Summary
-| Severity | Count |
-|----------|-------|
-| 🔴 Critical | N |
-| 🟡 Warning | N |
-| 🔵 Suggestion | N |
-| ✅ Good practices found | N |
+
+| Severity                | Count |
+| ----------------------- | ----- |
+| 🔴 Critical             | N     |
+| 🟡 Warning              | N     |
+| 🔵 Suggestion           | N     |
+| ✅ Good practices found | N     |
 
 ---
 
 ### 🔴 Critical Issues
+
 > Convention violations that could cause bugs, break architecture boundaries, or introduce serious maintainability problems.
 
 For each issue:
 **[FILENAME:LINE_APPROX]** — `<short rule name>`
+
 > <explanation of what's wrong and why it matters>
+
 ```
 <relevant code snippet>
 ```
+
 💡 **Fix:** <concrete suggestion>
 
 ---
 
 ### 🟡 Warnings
+
 > Bad practices that reduce readability, testability, or maintainability.
 
 (same format as Critical)
@@ -136,6 +149,7 @@ For each issue:
 ---
 
 ### 🔵 Suggestions
+
 > Optional improvements — good to address but not blocking.
 
 (same format as Critical)
@@ -143,6 +157,7 @@ For each issue:
 ---
 
 ### ✅ Good Practices Found
+
 > Acknowledge what was done well in the new code.
 
 - `<FILENAME>` — <what was done correctly and why it's good>
@@ -150,6 +165,7 @@ For each issue:
 ---
 
 ### Convention Coverage
+
 List which conventions were active and how many issues were found per convention.
 
 ---
